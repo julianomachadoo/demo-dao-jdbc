@@ -1,6 +1,5 @@
 package model.dao.impl;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -49,14 +48,16 @@ public class SellerDaoJDBC implements SellerDao {
 					+ "FROM seller INNER JOIN department "
 					+ "ON seller.DepartmentId = department.Id "
 					+ "WHERE seller.Id = ? ");
+			
 			st.setInt(1, id);
 			rs = st.executeQuery();
 			if (rs.next()) {
-				Department dep = new Department(rs.getInt("DepartmentId"), rs.getString("DepName"));
-				Seller obj = new Seller(rs.getInt("Id"), rs.getString("Name"), rs.getString("Email"), rs.getDate("BirthDate"), rs.getDouble("BaseSalary"), dep);
+				Department dep = instantiateDepartment(rs);
+				Seller obj = intantiateSeller(rs, dep);
 				return obj;
 			}
 			return null;
+			
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		} finally {
@@ -64,6 +65,16 @@ public class SellerDaoJDBC implements SellerDao {
 			DB.closeResultSet(rs);
 		}
 		
+	}
+
+	private Seller intantiateSeller(ResultSet rs, Department dep) throws SQLException {
+		Seller obj = new Seller(rs.getInt("Id"), rs.getString("Name"), rs.getString("Email"), rs.getDate("BirthDate"), rs.getDouble("BaseSalary"), dep);
+		return obj;
+	}
+
+	private Department instantiateDepartment(ResultSet rs) throws SQLException {
+		Department dep = new Department(rs.getInt("DepartmentId"), rs.getString("DepName"));
+		return dep;
 	}
 
 	@Override
