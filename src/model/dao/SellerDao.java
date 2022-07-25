@@ -9,8 +9,8 @@ public interface SellerDao {
 
 	/* Comunicação direta com o JDBC 
 	*/
-	void insert(Seller seller);	// insere departamento no banco de dados
-	void update(Seller seller);
+	void insert(Seller obj);	// insere departamento no banco de dados
+	void update(Seller obj);
 	void deleteById(Integer id);
 	Seller findById(Integer id);
 	List<Seller> findAll();
